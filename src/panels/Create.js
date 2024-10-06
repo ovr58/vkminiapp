@@ -1,7 +1,7 @@
 import { Div, Panel, PanelHeader, PanelHeaderBack } from '@vkontakte/vkui';
 import { useRouteNavigator } from '@vkontakte/vk-mini-apps-router';
 import PropTypes from 'prop-types';
-import { StorySubjectInput, StoryType } from '../components';
+import { AgeSetting, StorySubjectInput, StoryType } from '../components';
 
 export const Create = ({ id }) => {
   const routeNavigator = useRouteNavigator()
@@ -18,6 +18,7 @@ export const Create = ({ id }) => {
       <Div className='grid grid-cols-1 md:grid-cols-2 gap-10 mt-14'>
         <StorySubjectInput userPromt={handleUserPromt} />
         <StoryType />
+        <AgeSetting />
       </Div>
     </Panel>
   );

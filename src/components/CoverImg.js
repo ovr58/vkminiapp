@@ -1,31 +1,32 @@
 import { Div, FormItem, Image } from "@vkontakte/vkui"
-import { adventurePic, badtimePic, educationalPic } from "../assets"
 import { useState } from "react"
+import { dawnloadImg, generateImg, readyImg } from "../assets"
 
-function StoryType() {
+function AgeSetting() {
 
     const optionsList = [
         {
-            label: 'Приключения',
-            image: adventurePic,
+            label: 'Генерация',
+            image: generateImg,
+            isFree: false
+        },
+        {
+            label: 'Загрузить',
+            image: dawnloadImg,
             isFree: true
         },
         {
-            label: 'На ночь',
-            image: badtimePic,
-            isFree: true
-        },
-        {
-            label: 'Образовательная',
-            image: educationalPic,
+            label: 'Готовые',
+            image: readyImg,
             isFree: true
         },
     ]
 
     const [selectedOption, setSelectedOption] = useState(0)
+
   return (
-    <FormItem top="Жанр истории">
-        <label>Сказки бывают разные. Какая будет эта?</label>
+    <FormItem top="Обложка">
+        <label>Создайте обложку для Ваше книжки.</label>
         <Div className='grid grid-cols-3'>
             {optionsList.map((item, index) => (
                 <div key={`${index}_${item.label}`} onClick={() => setSelectedOption(index)} className="flex flex-row justify-evenly items-end">
@@ -42,4 +43,4 @@ function StoryType() {
   )
 }
 
-export default StoryType
+export default AgeSetting

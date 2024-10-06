@@ -1,31 +1,31 @@
 import { Div, FormItem, Image } from "@vkontakte/vkui"
-import { adventurePic, badtimePic, educationalPic } from "../assets"
 import { useState } from "react"
+import { SixEightyears, ThreeFiveyears, ZeroTwoyears } from "../assets"
 
-function StoryType() {
+function AgeSetting() {
 
     const optionsList = [
         {
-            label: 'Приключения',
-            image: adventurePic,
+            label: '0-2 годика',
+            image: ZeroTwoyears,
             isFree: true
         },
         {
-            label: 'На ночь',
-            image: badtimePic,
+            label: '3-5 лет',
+            image: ThreeFiveyears,
             isFree: true
         },
         {
-            label: 'Образовательная',
-            image: educationalPic,
+            label: '6-8 лет',
+            image: SixEightyears,
             isFree: true
         },
     ]
 
     const [selectedOption, setSelectedOption] = useState(0)
   return (
-    <FormItem top="Жанр истории">
-        <label>Сказки бывают разные. Какая будет эта?</label>
+    <FormItem top="Возраст ребенка">
+        <label>Для маленьких, самых маленьких или малюток?</label>
         <Div className='grid grid-cols-3'>
             {optionsList.map((item, index) => (
                 <div key={`${index}_${item.label}`} onClick={() => setSelectedOption(index)} className="flex flex-row justify-evenly items-end">
@@ -42,4 +42,4 @@ function StoryType() {
   )
 }
 
-export default StoryType
+export default AgeSetting
