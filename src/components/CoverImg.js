@@ -1,8 +1,9 @@
 import { Div, FormItem, Image } from "@vkontakte/vkui"
 import { useState } from "react"
 import { dawnloadImg, generateImg, readyImg } from "../assets"
+import PropTypes from 'prop-types'
 
-function AgeSetting() {
+function CoverImg({userPromt}) {
 
     const optionsList = [
         {
@@ -22,14 +23,23 @@ function AgeSetting() {
         },
     ]
 
-    const [selectedOption, setSelectedOption] = useState(0)
+    const [selectedOption, setSelectedOption] = useState(1)
 
   return (
     <FormItem top="Обложка">
         <label>Создайте обложку для Ваше книжки.</label>
         <Div className='grid grid-cols-3'>
             {optionsList.map((item, index) => (
-                <div key={`${index}_${item.label}`} onClick={() => setSelectedOption(index)} className="flex flex-row justify-evenly items-end">
+                <div 
+                    key={`${index}_${item.label}`} 
+                    onClick={() => (
+                        setSelectedOption(index),
+                        userPromt({
+                            coverImg: item.label
+                        }) 
+                    )}  
+                    className="flex flex-row justify-evenly items-end"
+                >
                         <div className=' z-10 w-[6px] max-h-[30px] -rotate-90 origin-left whitespace-nowrap'>
                             {/* <div className='absolute -z-20 left-20 -bottom-24 rounded-e-lg -rotate-90 w-[30px] h-[170px] origin-left whitespace-nowrap bg-gray-600 p-2'>
                             </div> */}
@@ -43,4 +53,8 @@ function AgeSetting() {
   )
 }
 
-export default AgeSetting
+export default CoverImg
+
+CoverImg.propTypes = {
+    userPromt: PropTypes.func,
+  };

@@ -9,6 +9,7 @@ import SixEightyears from './58Years.png'
 import dawnloadImg from './dawnloadImg.jpg'
 import generateImg from './generateImg.jpg'
 import readyImg from './readyImg.jpg'
+import letsCreate from './letsCreate.jpg'
 
 export { 
     logo, 
@@ -22,4 +23,5 @@ export {
     dawnloadImg,
     generateImg,
     readyImg,
+    letsCreate
 }

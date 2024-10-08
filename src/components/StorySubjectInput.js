@@ -7,8 +7,7 @@ function StorySubjectInput({userPromt}) {
     <FormItem top="Фабула истории">
         <label>Напишите краткое содержание Вашей истории... </label>
         <Textarea placeholder="Шаблон:  " maxHeight={230} onChange={(e) => userPromt({
-            fieldValue: e.target.value,
-            fieldName: 'storySubject'
+            storySubject: e.target.value,
         })}/>
     </FormItem>
   )
@@ -17,8 +16,5 @@ function StorySubjectInput({userPromt}) {
 export default StorySubjectInput
 
 StorySubjectInput.propTypes = {
-    userPromt: PropTypes.shape({
-      fieldValue: PropTypes.string,
-      fieldName: PropTypes.string,
-    }),
+    userPromt: PropTypes.func,
   };

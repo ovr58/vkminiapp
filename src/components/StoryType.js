@@ -1,8 +1,9 @@
 import { Div, FormItem, Image } from "@vkontakte/vkui"
 import { adventurePic, badtimePic, educationalPic } from "../assets"
 import { useState } from "react"
+import PropTypes from 'prop-types';
 
-function StoryType() {
+function StoryType({userPromt}) {
 
     const optionsList = [
         {
@@ -28,7 +29,16 @@ function StoryType() {
         <label>Сказки бывают разные. Какая будет эта?</label>
         <Div className='grid grid-cols-3'>
             {optionsList.map((item, index) => (
-                <div key={`${index}_${item.label}`} onClick={() => setSelectedOption(index)} className="flex flex-row justify-evenly items-end">
+                <div 
+                    key={`${index}_${item.label}`} 
+                    onClick={() => (
+                        setSelectedOption(index),
+                        userPromt({
+                            storyType: item.label
+                        }) 
+                    )}
+                    className="flex flex-row justify-evenly items-end"
+                >
                         <div className=' z-10 w-[6px] max-h-[30px] -rotate-90 origin-left whitespace-nowrap'>
                             {/* <div className='absolute -z-20 left-20 -bottom-24 rounded-e-lg -rotate-90 w-[30px] h-[170px] origin-left whitespace-nowrap bg-gray-600 p-2'>
                             </div> */}
@@ -43,3 +53,7 @@ function StoryType() {
 }
 
 export default StoryType
+
+StoryType.propTypes = {
+    userPromt: PropTypes.func,
+  };
