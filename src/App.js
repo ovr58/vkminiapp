@@ -25,7 +25,7 @@ export const App = () => {
       <SplitCol>
         <View activePanel={activePanel}>
           <Home id="home" fetchedUser={fetchedUser} />
-          <Create id="create" />
+          {fetchedUser && <Create id="create" fetchedUser={fetchedUser}/>}
           <Explore id="explore" />
           <Contact id="contact" />
         </View>

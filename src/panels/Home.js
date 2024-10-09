@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { fairytails, logo } from '../assets';
 
 export const Home = ({ id, fetchedUser }) => {
-  const { photo_200, city, first_name, last_name } = { ...fetchedUser };
+  const { photo_200, city, first_name, last_name  } = { ...fetchedUser };
   const routeNavigator = useRouteNavigator();
 
   return (
@@ -15,13 +15,13 @@ export const Home = ({ id, fetchedUser }) => {
           Подари ребенку сказку
         </div>
       </PanelHeader>
-      {/* {fetchedUser && (
+      {fetchedUser && (
         <Group header={<Header mode="secondary">Ох уж эти сказочники...</Header>}>
           <Cell before={photo_200 && <Avatar src={photo_200} />} subtitle={city?.title}>
             {`${first_name} ${last_name}`}
           </Cell>
         </Group>
-      )} */}
+      )}
 
       <Group>
         <Div style={{display: 'flex', gap: '15px', justifyContent: 'space-evenly'}}>

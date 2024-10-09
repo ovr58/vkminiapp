@@ -60,7 +60,7 @@ export default defineConfig({
     port: 5173,
     host: 'localhost',
     hmr: {
-      protocol: 'ws',
+      protocol: 'http',
       host: 'localhost',
     },
   },

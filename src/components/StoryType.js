@@ -7,12 +7,12 @@ function StoryType({userPromt}) {
 
     const optionsList = [
         {
-            label: 'Приключения',
+            label: 'Приключенческая',
             image: adventurePic,
             isFree: true
         },
         {
-            label: 'На ночь',
+            label: 'Сказка на ночь',
             image: badtimePic,
             isFree: true
         },

@@ -6,9 +6,13 @@ function StorySubjectInput({userPromt}) {
   return (
     <FormItem top="Фабула истории">
         <label>Напишите краткое содержание Вашей истории... </label>
-        <Textarea placeholder="Шаблон:  " maxHeight={230} onChange={(e) => userPromt({
+        <Textarea 
+          placeholder="сказка про мальчика Ваню и Волшебную школу" 
+          maxHeight={230} 
+          onChange={(e) => userPromt({
             storySubject: e.target.value,
-        })}/>
+          })}
+        />
     </FormItem>
   )
 }
