@@ -9,5 +9,5 @@ export const StoryData = pgTable('storyData', {
     ageGroup: varchar('ageGroup'),
     imageType: varchar('imageType'),
     output: json('output'),
-    coverImage: varchar('coverImage')
+    coverImage: text('coverImage')
 })

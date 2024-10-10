@@ -8,6 +8,7 @@ import { chatSession } from '../../config/gemeniai';
 import { db } from '../../config/db';
 import { StoryData } from '../../config/schema';
 import { v4 as uuidv4 } from 'uuid'
+import { generateImg } from '../../config/yandexart';
 
 const promtBP = import.meta.env.VITE_APP_STORY_PRMT
 
@@ -56,9 +57,16 @@ export const Create = ({ id, fetchedUser }) => {
       .replace('{storyTypeText}', storyTypeText)
     console.log(finalPromt)
     try {
+      
       const result = await chatSession.sendMessage(finalPromt)
-      const resp = await saveInDB(result.response.text())
-      console.log('FROM - DB SAVE - ', resp)
+      const gemeniaiAnswer = JSON.parse(result.response.text())
+      
+      const operationId = await generateImg(gemeniaiAnswer.cover_prompt)
+
+      console.log(operationId)
+
+      // const resp = await saveInDB(result.response.text())
+      // console.log('FROM - DB SAVE - ', resp)
       setPopout(null)
     } catch (error) {
       console.log(error)
