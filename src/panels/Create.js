@@ -4,11 +4,11 @@ import PropTypes from 'prop-types';
 import { AgeSetting, CoverImg, StorySubjectInput, StoryType } from '../components';
 import { useState } from 'react';
 import { letsCreate } from '../assets';
-import { chatSession } from '../../config/gemeniai';
-import { db } from '../../config/db';
-import { StoryData } from '../../config/schema';
+import { chatSession } from '../api/gemeniai';
 import { v4 as uuidv4 } from 'uuid'
 import { generateImg } from '../../config/yandexart';
+import { db } from '../api';
+import { StoryData } from '../api/schema';
 
 const promtBP = import.meta.env.VITE_APP_STORY_PRMT
 
