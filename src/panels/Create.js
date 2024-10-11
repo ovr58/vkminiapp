@@ -4,11 +4,8 @@ import PropTypes from 'prop-types';
 import { AgeSetting, CoverImg, StorySubjectInput, StoryType } from '../components';
 import { useState } from 'react';
 import { letsCreate } from '../assets';
-import { chatSession } from '../api/gemeniai';
 import { v4 as uuidv4 } from 'uuid'
-import { generateImg } from '../../config/yandexart';
-import { db } from '../api';
-import { StoryData } from '../api/schema';
+import { chatSession, db, StoryData } from '../api';
 
 const promtBP = import.meta.env.VITE_APP_STORY_PRMT
 
@@ -61,9 +58,9 @@ export const Create = ({ id, fetchedUser }) => {
       const result = await chatSession.sendMessage(finalPromt)
       const gemeniaiAnswer = JSON.parse(result.response.text())
       
-      const operationId = await generateImg(gemeniaiAnswer.cover_prompt)
+      // const operationId = await generateImg(gemeniaiAnswer.cover_prompt)
 
-      console.log(operationId)
+      console.log(gemeniaiAnswer)
 
       // const resp = await saveInDB(result.response.text())
       // console.log('FROM - DB SAVE - ', resp)
@@ -83,7 +80,7 @@ export const Create = ({ id, fetchedUser }) => {
         userId: userId,
         storySubject: promt.storySubject,
         storyType: promt.storyType,
-        imageType: promt.coverImage,
+        imageType: promt.coverImg,
         output: JSON.parse(output)
       }).returning({storyId: StoryData.storyId})
       return result

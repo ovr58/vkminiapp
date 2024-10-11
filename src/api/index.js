@@ -1,9 +1,9 @@
-import db from 'db.js'
-import gemeniai from 'gemeniai.js'
-import schema from 'schema.js'
+import {db} from './db'
+import {chatSession} from './gemeniai'
+import {StoryData} from './schema'
 
 export {
     db,
-    gemeniai,
-    schema
+    chatSession,
+    StoryData
 }
