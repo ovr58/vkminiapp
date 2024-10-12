@@ -5,7 +5,8 @@ import { AgeSetting, CoverImg, StorySubjectInput, StoryType } from '../component
 import { useState } from 'react';
 import { letsCreate } from '../assets';
 import { v4 as uuidv4 } from 'uuid'
-import { chatSession, db, StoryData } from '../api';
+import { chatSession, db, generateImg, StoryData } from '../api';
+import axios from 'axios';
 
 const promtBP = import.meta.env.VITE_APP_STORY_PRMT
 
@@ -58,9 +59,9 @@ export const Create = ({ id, fetchedUser }) => {
       const result = await chatSession.sendMessage(finalPromt)
       const gemeniaiAnswer = JSON.parse(result.response.text())
       
-      // const operationId = await generateImg(gemeniaiAnswer.cover_prompt)
+      const imgOutputUrl = await axios.post('https://imggenerateapi-38d36a8b3280.herokuapp.com/generate-image', { prompt: gemeniaiAnswer.cover_prompt })
 
-      console.log(gemeniaiAnswer)
+      console.log(imgOutputUrl)
 
       // const resp = await saveInDB(result.response.text())
       // console.log('FROM - DB SAVE - ', resp)

@@ -21,10 +21,12 @@
     "@vkontakte/vk-bridge-react": "^1.0.1",
     "@vkontakte/vk-mini-apps-router": "^1.4.2",
     "@vkontakte/vkui": "^6.0.0",
+    "axios": "^1.7.7",
     "drizzle-orm": "^0.33.0",
     "prop-types": "^15.8.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "replicate": "^1.0.0",
     "uuid": "^10.0.0"
   },
   "devDependencies": {
