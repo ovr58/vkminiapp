@@ -14,7 +14,9 @@ export const Create = ({ id, fetchedUser }) => {
 
   const routeNavigator = useRouteNavigator()
 
-  const { userId, country } = { ...fetchedUser }
+  const { id: userId, country } = { ...fetchedUser }
+
+  console.log('USERID - ', userId)
 
   const [promt, setPromt] = useState({
     storySubject: '',
@@ -59,16 +61,15 @@ export const Create = ({ id, fetchedUser }) => {
       const result = await chatSession.sendMessage(finalPromt)
       const gemeniaiAnswer = JSON.parse(result.response.text())
       console.log('GEMENI ANSWER - ', gemeniaiAnswer)
-      const coverImgPrompt = `Generate an illustration for the book cover. Don't place title on it. The illustration should match the prompt:: ${gemeniaiAnswer.cover_prompt}`
+      const coverImgPrompt = `Generate an illustration. Don't place any text on the image. The illustration should match the prompt:: ${gemeniaiAnswer.cover_prompt}`
       const generatedResponse  = await axios.post('https://imggenerateapi-38d36a8b3280.herokuapp.com/generate-image', { prompt: coverImgPrompt })
+      
       console.log('RESPONSE - ', generatedResponse)
 
-      const url = generatedResponse.data.image;
+      const coverImgB64 = 'data:image/png;base64,' + generatedResponse.data.image
       
-      console.log('URL - ', url)
-      
-      // const resp = await saveInDB(result.response.text())
-      // console.log('FROM - DB SAVE - ', resp)
+      const resp = await saveInDB(result.response.text(), coverImgB64)
+      console.log('FROM - DB SAVE - ', resp)
       setPopout(null)
     } catch (error) {
       console.log(error)
@@ -77,7 +78,7 @@ export const Create = ({ id, fetchedUser }) => {
     return
   }
 
-  const saveInDB = async (output) => {
+  const saveInDB = async (output, coverImgB64) => {
     try {
       const result = await db.insert(StoryData).values({
         storyId: uuidv4(),
@@ -86,7 +87,8 @@ export const Create = ({ id, fetchedUser }) => {
         storySubject: promt.storySubject,
         storyType: promt.storyType,
         imageType: promt.coverImg,
-        output: JSON.parse(output)
+        output: JSON.parse(output),
+        coverImage: coverImgB64
       }).returning({storyId: StoryData.storyId})
       return result
     } catch (error) {
