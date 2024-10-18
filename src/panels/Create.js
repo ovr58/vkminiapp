@@ -37,7 +37,7 @@ export const Create = ({ id, fetchedUser }) => {
 
   const generateStory = async () => {
 
-    setPopout(<ScreenSpinner state="loading" />)
+    setPopout(<ScreenSpinner state="loading" size="large" caption="Долго сказка сказывается..." />)
     
     const storyTypeText = 
       promt.storyType === 'Приключенческая' ? 
@@ -60,6 +60,7 @@ export const Create = ({ id, fetchedUser }) => {
       
       const result = await chatSession.sendMessage(finalPromt)
       const gemeniaiAnswer = JSON.parse(result.response.text())
+      setPopout(<ScreenSpinner state="loading" size="large" caption="Лучше один раз увидеть..." />)
       console.log('GEMENI ANSWER - ', gemeniaiAnswer)
       const coverImgPrompt = `Generate an illustration. Don't place any text on the image. The illustration should match the prompt:: ${gemeniaiAnswer.cover_prompt}`
       const generatedResponse  = await axios.post('https://imggenerateapi-38d36a8b3280.herokuapp.com/generate-image', { prompt: coverImgPrompt })
@@ -67,7 +68,7 @@ export const Create = ({ id, fetchedUser }) => {
       console.log('RESPONSE - ', generatedResponse)
 
       const coverImgB64 = 'data:image/png;base64,' + generatedResponse.data.image
-      
+      setPopout(<ScreenSpinner state="loading" size="large" caption="Сохраню как все в кузовок..." />)
       const resp = await saveInDB(result.response.text(), coverImgB64)
       console.log('FROM - DB SAVE - ', resp)
       setPopout(null)
@@ -129,12 +130,6 @@ export const Create = ({ id, fetchedUser }) => {
           <CoverImg userPromt={handleUserPromt} />
         </SplitCol>
       </SplitLayout>
-      <Div key='promt'>
-        {promt.storyType}
-        {promt.coverImg}
-        {promt.storySubject}
-        {promt.ageSetting}
-      </Div>
     </Panel>
   );
 };

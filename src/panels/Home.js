@@ -1,4 +1,4 @@
-import { Panel, PanelHeader, Header, Button, Group, Cell, Div, Avatar, Image, SplitLayout, SplitCol, Text, EllipsisText } from '@vkontakte/vkui';
+import { Panel, PanelHeader, Header, Button, Group, Cell, Div, Avatar, Image, SplitLayout, SplitCol } from '@vkontakte/vkui';
 import { useRouteNavigator } from '@vkontakte/vk-mini-apps-router';
 import PropTypes from 'prop-types';
 import { fairytails, logo } from '../assets';
@@ -28,7 +28,7 @@ export const Home = ({ id, fetchedUser }) => {
           <Button key='mainMenu1' stretched size="1" mode="primary" onClick={() => routeNavigator.push('create')}>
             Напиши сказку!
           </Button>
-          <Button key='mainMenu2' stretched size="l" mode="primary" onClick={() => routeNavigator.push('explore')}>
+          <Button key='mainMenu2' stretched size="l" mode="primary" onClick={() => routeNavigator.push('/viewStory/031ee8d7-c397-4763-860a-f42c3a992fe4')}>
             Сказки Вконтакта!
           </Button>
           <Button key='mainMenu3' stretched size="l" mode="primary" onClick={() => routeNavigator.push('contact')}>

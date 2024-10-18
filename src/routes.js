@@ -14,7 +14,8 @@ export const DEFAULT_VIEW_PANELS = {
   HOME: 'home',
   CREATE: 'create',
   EXPLORE: 'explore',
-  CONTACT: 'contact'
+  CONTACT: 'contact',
+  VIEWSTORY: 'viewStory'
 };
 
 export const routes = RoutesConfig.create([
@@ -24,6 +25,7 @@ export const routes = RoutesConfig.create([
       createPanel(DEFAULT_VIEW_PANELS.CREATE, `/${DEFAULT_VIEW_PANELS.CREATE}`, []),
       createPanel(DEFAULT_VIEW_PANELS.EXPLORE, `/${DEFAULT_VIEW_PANELS.EXPLORE}`, []),
       createPanel(DEFAULT_VIEW_PANELS.CONTACT, `/${DEFAULT_VIEW_PANELS.CONTACT}`, []),
+      createPanel(DEFAULT_VIEW_PANELS.VIEWSTORY, `/${DEFAULT_VIEW_PANELS.VIEWSTORY}/:storyid`, []),
     ]),
   ]),
 ]);
