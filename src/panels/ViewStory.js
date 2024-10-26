@@ -5,7 +5,7 @@ import { db, StoryData } from '../api';
 import { eq } from 'drizzle-orm';
 import { useCallback, useEffect, useState } from 'react';
 import HTMLFlipBook from 'react-pageflip';
-import { BookCover } from '../components';
+import { BookCover, BookTitle } from '../components';
 
 
 export const ViewStory = ({ id, fetchedUser }) => {
@@ -35,7 +35,7 @@ export const ViewStory = ({ id, fetchedUser }) => {
 
     const res = await db.select().from(StoryData).where(eq(StoryData.storyId, params.storyid))
     res[0].imgUrl = getImgFromBase64(res[0].coverImage)
-    console.log('DB RES - ', res[0].imgUrl)
+    console.log('DB RES - ', res[0])
     setStory(res[0])
   }
   , [params])
@@ -50,11 +50,24 @@ export const ViewStory = ({ id, fetchedUser }) => {
     <Panel id={id}>
       <PanelHeader before={<PanelHeaderBack onClick={() => routeNavigator.back()} />}>
       </PanelHeader>
+      {story ? 
       <Div key='viewStory'>
         <HTMLFlipBook width={300} height={400} size={"stretch"} minHeight={400} minWidth={300} maxHeight={1024} maxWidth={924}>
-          <BookCover story={story} />
+          <div key='cover'>
+            <BookTitle story={story} className='absolute'/>
+            <BookCover story={story} />
+          </div>
+          <div key='page1'>
+            <BookCover story={story} />
+          </div>
+          <div key='page2'>
+            <BookCover story={story} />
+          </div>
+          <div key='page3'>
+            <BookCover story={story} />
+          </div>
         </HTMLFlipBook>
-      </Div>
+      </Div> : ''}
     </Panel>
   );
 };

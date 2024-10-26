@@ -3,11 +3,8 @@ import PropTypes from 'prop-types';
 
 function BookCover({story}) {
 
-    if (!story) return
-
-
   return (
-    <Image src={story.imgUrl} />
+    <Image src={story.imgUrl} style={{width: 'auto', height: 'auto', padding: '5px', marginRight: '10px'}} />
   )
 }
 

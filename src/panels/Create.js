@@ -62,7 +62,7 @@ export const Create = ({ id, fetchedUser }) => {
       const gemeniaiAnswer = JSON.parse(result.response.text())
       setPopout(<ScreenSpinner state="loading" size="large" caption="Лучше один раз увидеть..." />)
       console.log('GEMENI ANSWER - ', gemeniaiAnswer)
-      const coverImgPrompt = `Generate an illustration. Don't place any text on the image. The illustration should match the prompt:: ${gemeniaiAnswer.cover_prompt}`
+      const coverImgPrompt = `Generate an illustration that matches the prompt: ${gemeniaiAnswer.cover_prompt}`
       const generatedResponse  = await axios.post('https://imggenerateapi-38d36a8b3280.herokuapp.com/generate-image', { prompt: coverImgPrompt })
       
       console.log('RESPONSE - ', generatedResponse)

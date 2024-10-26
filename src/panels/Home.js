@@ -1,11 +1,12 @@
-import { Panel, PanelHeader, Header, Button, Group, Cell, Div, Avatar, Image, SplitLayout, SplitCol } from '@vkontakte/vkui';
+import { Panel, PanelHeader, Header, Button, Group, Cell, Div, Avatar, Image, SplitLayout, SplitCol, useAdaptivityConditionalRender } from '@vkontakte/vkui';
 import { useRouteNavigator } from '@vkontakte/vk-mini-apps-router';
 import PropTypes from 'prop-types';
 import { fairytails, logo } from '../assets';
 
 export const Home = ({ id, fetchedUser }) => {
-  const { photo_200, city, first_name, last_name  } = { ...fetchedUser };
-  const routeNavigator = useRouteNavigator();
+  const { photo_200, city, first_name, last_name  } = { ...fetchedUser }
+  const routeNavigator = useRouteNavigator()
+  const { viewWidth } = useAdaptivityConditionalRender()
 
   return (
     <Panel id={id}>
@@ -40,17 +41,19 @@ export const Home = ({ id, fetchedUser }) => {
         <SplitCol width="100%" maxWidth="560px" autoSpaced>
           <Image src={fairytails} alt={"сказочный VK"}  style={{width: 'auto', height: 'auto', padding: '5px', marginRight: '10px'}}/>
         </SplitCol>
-        <SplitCol autoSpaced>
-          <div key='firstTextMain' style={{marginBottom: '15px', fontFamily: 'sans-serif', fontSize: '24px', textAlign: 'center', textUnderlineOffset: '20px' }}>
-            Создай магический подарок - книжку-сказку за минуту!
-          </div>
-          <div key='secondTextMain' style={{marginBottom: '15px', fontFamily: 'sans-serif', fontSize: '18px', textAlign: 'center', textUnderlineOffset: '20px' }}>
-            За секунды создайте приключения с Вашим чадом в главной роли! Это подстегнет его страсть к чтению и заложит основы разносторонней личности!
-          </div>
-          <Button key='secondMenu1' stretched size="1" mode="primary" onClick={() => routeNavigator.push('create')}>
-            Начать!
-          </Button>
-        </SplitCol>
+        {viewWidth.tabletPlus && (
+          <SplitCol width={280} maxWidth={280} autoSpaced>
+            <div key='firstTextMain' style={{marginBottom: '15px', fontFamily: 'sans-serif', fontSize: '24px', textAlign: 'center', textUnderlineOffset: '20px' }}>
+              Создай магический подарок - книжку-сказку за минуту!
+            </div>
+            <div key='secondTextMain' style={{marginBottom: '15px', fontFamily: 'sans-serif', fontSize: '18px', textAlign: 'center', textUnderlineOffset: '20px' }}>
+              За секунды создайте приключения с Вашим чадом в главной роли! Это подстегнет его страсть к чтению и заложит основы разносторонней личности!
+            </div>
+            <Button key='secondMenu1' stretched size="1" mode="primary" onClick={() => routeNavigator.push('create')}>
+              Начать!
+            </Button>
+          </SplitCol>
+        )}
       </SplitLayout>
     </Panel>
   );
