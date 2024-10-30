@@ -3,3 +3,4 @@ drizzle.config.js
 .env
 .todo
 .copilot
+.vscode

@@ -6,7 +6,7 @@ import useImage from 'use-image'
 
 const Page = forwardRef(({children, story, index}, ref) => {
     return (
-        <div ref={ref} className="page" >
+        <div ref={ref} className="w-full h-full bg-white" >
         <div className="page-content">
           <h2 className="page-header">Page header - {index}</h2>
           <div className="page-image"></div>
@@ -40,6 +40,7 @@ const Cover = forwardRef(({story, boundingRect}, ref) => {
     const [coverImage] = useImage(story.imgUrl)
 
     const [imageSize, setImageSize] = useState([300,400])
+    const [imagePos, setImagePos] = useState([0,0])
 
     const handleDragStart = (e) => {
         const id = e.target.id()
@@ -60,27 +61,26 @@ const Cover = forwardRef(({story, boundingRect}, ref) => {
         )
     }
     useEffect(() => {
-        console.log('BOUNDING RECT - ', boundingRect)
         if (coverStageRef.current && boundingRect && boundingRect.pageWidth && boundingRect.height) {
             const newWidth = boundingRect.pageWidth
             const ratio = coverImage ? coverImage.width/newWidth : 1
             const newHeight = coverImage ? coverImage.height / ratio : 400
-            console.log('COVER IMAGE HEIGHT - ', newHeight)
             coverStageRef.current.width(newWidth)
-            coverStageRef.current.height(newHeight)
+            coverStageRef.current.height(boundingRect.height)
+            setImagePos([0, boundingRect.height/2-newHeight/2])
             setImageSize([newWidth, newHeight])
         }
       }, [boundingRect, coverImage])
 
     return (
-        <div ref={ref} id='cover-container'>
+        <div ref={ref} id='cover-container' className='w-full h-auto bg-white'>
             <Stage ref={coverStageRef} width={300} height={400}>
                 <Layer key='imageLayer'>
                     {coverImage && <Image
                     id='coverImage'
                     image={coverImage}
-                    x={0}
-                    y={0}
+                    x={imagePos[0]}
+                    y={imagePos[1]}
                     width={imageSize[0]}
                     height={imageSize[1]}
                     />}
@@ -148,7 +148,6 @@ function FlipBook({ story }) {
         maxWidth={924}
         maxShadowOpacity={0.5}
         onInit={handleInit}
-        className='w-full h-auto'
     >
         <Cover  ref={coverRef} story={story} boundingRect={boundingRect} />
         <Page  ref={pageRef} story={story} index={0}/>
