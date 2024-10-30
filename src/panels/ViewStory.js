@@ -3,9 +3,9 @@ import { useParams, useRouteNavigator } from '@vkontakte/vk-mini-apps-router';
 import PropTypes from 'prop-types';
 import { db, StoryData } from '../api';
 import { eq } from 'drizzle-orm';
-import { useCallback, useEffect, useState } from 'react';
+import { forwardRef, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import HTMLFlipBook from 'react-pageflip';
-import { BookCover, BookTitle } from '../components';
+import { BookCover, BookTitle, FlipBook } from '../components';
 
 
 export const ViewStory = ({ id, fetchedUser }) => {
@@ -44,6 +44,7 @@ export const ViewStory = ({ id, fetchedUser }) => {
     getStory()
   }, [getStory])
 
+
   const { id: userId, country } = { ...fetchedUser }
 
   return (
@@ -51,23 +52,8 @@ export const ViewStory = ({ id, fetchedUser }) => {
       <PanelHeader before={<PanelHeaderBack onClick={() => routeNavigator.back()} />}>
       </PanelHeader>
       {story ? 
-      <Div key='viewStory'>
-        <HTMLFlipBook width={300} height={400} size={"stretch"} minHeight={400} minWidth={300} maxHeight={1024} maxWidth={924}>
-          <div key='cover'>
-            <BookTitle story={story} className='absolute'/>
-            <BookCover story={story} />
-          </div>
-          <div key='page1'>
-            <BookCover story={story} />
-          </div>
-          <div key='page2'>
-            <BookCover story={story} />
-          </div>
-          <div key='page3'>
-            <BookCover story={story} />
-          </div>
-        </HTMLFlipBook>
-      </Div> : ''}
+        <FlipBook story={story} />
+       : ''}
     </Panel>
   );
 };

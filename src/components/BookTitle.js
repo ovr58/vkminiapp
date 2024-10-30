@@ -23,6 +23,7 @@ function BookTitle({story}) {
   })
 
   const [frameImage] = useImage(`/frame00${titleState.frame}.svg`)
+  const [coverImage] = useImage(story.imgUrl)
 
   const handleDragStart = (e) => {
     const id = e.target.id()
@@ -45,47 +46,58 @@ function BookTitle({story}) {
 
   useEffect(() => {
     if (stageRef.current) {
-      // const container = document.querySelector('#cover-container')
       
-      // const parentWidth = container.offsetWidth
+      const container = document.querySelector('#cover-container')
       
-      // const scale = parentWidth / 400
+      const parentWidth = container.offsetWidth
+      console.log('PARENT WIDTH - ', parentWidth)
+      const scaleW = 1
 
-      // stageRef.current.width(400*scale)
-      // stageRef.current.height(400*scale)
-      // stageRef.current.scale({x: scale, y: scale})
+      stageRef.current.width(parentWidth)
+      stageRef.current.scale({x: scaleW, y: 1})
     }
   }, [])
 
   return (
-    <Stage ref={stageRef} className='absolute w-full h-full left-0 top-0 mx-auto z-50 justify-center' width={400} height={400}>
-      <Layer>
-        <Image
+    <Stage ref={stageRef} width={300} height={400}>
+      <Layer key='imageLayer'>
+        {coverImage && <Image
+          id='coverImage'
+          image={coverImage}
+          x={0}
+          y={0}
+          width={stageRef.current.width()}
+          height={stageRef.current.height()}
+        />}
+      </Layer>
+      <Layer key='titleLayer'>
+        {stageRef.current && <Image
           id='titleImage' 
           image={frameImage} 
-          x={titleState.x} 
-          y={titleState.y}
-          width={300}
-          height={300} 
+          x={stageRef.current.width()/2 - (stageRef.current.width()*0.4)} 
+          y={stageRef.current.height()/2 - (stageRef.current.height()*0.4)/2}
+          width={stageRef.current.width()*0.4}
+          height={stageRef.current.height()*0.4} 
           draggable 
           rotation={titleState.frameAngle}
           onDragStart={handleDragStart}
           onDragEnd={handleDragEnd}
-        />
-        <Text 
+        /> }
+        {frameImage && <Text 
           id='titleText'
           text={titleState.text} 
           x={titleState.x} 
           y={titleState.y}
-          width={300}
-          height={300} 
+          width={stageRef.current.width()*0.2}
+          height={stageRef.current.width()*0.2} 
           draggable
           verticalAlign='middle' 
           align='center' 
           onDragStart={handleDragStart}
           onDragEnd={handleDragEnd}
-        />
+        /> }
       </Layer>
+      
     </Stage>
   )
 }
@@ -93,5 +105,6 @@ function BookTitle({story}) {
 export default BookTitle
 
 BookTitle.propTypes = {
-    story: PropTypes.object
+    story: PropTypes.object,
+    rect: PropTypes.any
 }
