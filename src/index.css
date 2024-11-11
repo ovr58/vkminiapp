@@ -1,3 +1,24 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@font-face {
+    font-family: 'Lobster-Regular';
+    src: url('./assets/Fonts/Lobster-Regular.ttf') format('truetype');
+  }
+  
+@font-face {
+    font-family: 'Oswald-Bold';
+    src: url('./assets/Fonts/Oswald-Bold.ttf') format('truetype');
+  }
+  
+@font-face {
+    font-family: 'Ruslan-Display';
+    src: url('./assets/Fonts/RuslanDisplay-Regular.ttf') format('truetype');
+  }
+  
+@font-face {
+    font-family: 'Shantel-Sans-Bold';
+    src: url('./assets/Fonts/ShantellSans-Bold.ttf') format('truetype');
+  }
+  

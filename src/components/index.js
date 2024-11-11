@@ -5,6 +5,7 @@ import CoverImg from './CoverImg'
 import BookCover from "./BookCover"
 import BookTitle from "./BookTitle"
 import FlipBook from "./FlipBook"
+import UISetting from "./UISetting"
 
 
-export {StorySubjectInput, StoryType, AgeSetting, CoverImg, FlipBook, BookCover, BookTitle}
+export {StorySubjectInput, StoryType, AgeSetting, CoverImg, FlipBook, BookCover, BookTitle, UISetting}

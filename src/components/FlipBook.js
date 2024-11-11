@@ -1,8 +1,9 @@
 import React, { forwardRef, useEffect, useRef, useState } from 'react'
 import PropTypes from 'prop-types'
-import { Image, Layer, Stage, Text } from 'react-konva'
+import { Image, Layer, Stage, Text, Transformer } from 'react-konva'
 import HTMLFlipBook from 'react-pageflip'
 import useImage from 'use-image'
+import UISetting from './UISetting'
 
 const Page = forwardRef(({children, story, index}, ref) => {
     return (
@@ -17,26 +18,45 @@ const Page = forwardRef(({children, story, index}, ref) => {
     )
 })
 
+const titleInitialSetting = [
+    {
+        id: 'titleImage',
+        x: 0,
+        y: 0,
+        width: 200,
+        height: 200,
+        angle: 0,
+        colorGroups: {},
+        frameNumber: 1
+    },
+    {
+        id: 'titleText',
+        x: 0,
+        y: 0,
+        width: 200,
+        height: 200,
+        angle: 0,
+        colorGroup: {
+            borderColor: '#000',
+            backgroundColor: '#000',
+        },
+        font: 'Arial',
+        isInline: true,
+        text: 'Волшебная сказка'
+    },
+]
+
 const Cover = forwardRef(({story, boundingRect}, ref) => {
 
     const coverStageRef = useRef()
+    const frameImageRef = useRef()
+    const titleTextRef = useRef()
+    const transformerRef = useRef()
 
-    const [titleState, setTitleState] = useState({
-        x: 200,
-        y: 250,
-        frameScale: [1,1],
-        textScale: [1,1],
-        text: story.output.book_title,
-        font: 0,
-        frame: 1,
-        frameColor: '#000',
-        frameBackground: '#FFF',
-        textColor: '#000',
-        textAngle: 0,
-        frameAngle: 0,
-      })
+    const [titleState, setTitleState] = useState(titleInitialSetting)
+    const [selectedId, setSelectedId] = useState(null)
 
-    const [frameImage] = useImage(`/frame00${titleState.frame}.svg`)
+    const [frameImage] = useImage(`/frame00${titleState[0].frameNumber}.svg`)
     const [coverImage] = useImage(story.imgUrl)
 
     const [imageSize, setImageSize] = useState([300,400])
@@ -44,22 +64,104 @@ const Cover = forwardRef(({story, boundingRect}, ref) => {
 
     const handleDragStart = (e) => {
         const id = e.target.id()
-        setTitleState(
-        {
-            ...titleState,
-            isDragging: titleState.id === id,
+        let nodeIndex
+        switch (id) {
+            case 'titleImage':
+                nodeIndex = 0
+                break;
+            case 'titleText':
+                nodeIndex = 1
+                break;
+            default:
+                break;
         }
+        onChange(
+            {
+                ...titleState[nodeIndex],
+                isDragging: titleState[nodeIndex].id === id,
+            }, 
+            nodeIndex
         )
     }
     const handleDragEnd = (e) => {
         const id = e.target.id()
-        setTitleState(
-        {
-            ...titleState,
-            isDragging: titleState.id === id,
+        let nodeIndex
+        switch (id) {
+            case 'titleImage':
+                nodeIndex = 0
+                break;
+            case 'titleText':
+                nodeIndex = 1
+                break;
+            default:
+                break;
         }
+        onChange(
+            {
+                ...titleState[nodeIndex],
+                x: e.target.x(),
+                y: e.target.y(),
+                isDragging: titleState[nodeIndex].id === id,
+            }, 
+            nodeIndex
         )
     }
+
+    const handleTransformEnd = () => {
+        // transformer is changing scale of the node
+        // and NOT its width or height
+        // but in the store we have only width and height
+        // to match the data better we will reset scale on transform end
+        let node
+        let nodeIndex
+        console.log('TRANSFORM END')
+        switch (selectedId) {
+            case 'titleImage':
+                node = frameImageRef.current
+                nodeIndex = 0
+                break;
+            case 'titleText':
+                node = titleTextRef.current
+                nodeIndex = 1
+                break;
+            default:
+                break;
+        }
+        const scaleX = node.scaleX()
+        const scaleY = node.scaleY()
+
+        // we will reset it back
+        node.scaleX(1)
+        node.scaleY(1)
+        const newAttrs = {
+            ...titleState[nodeIndex],
+            x: node.x(),
+            y: node.y(),
+            // set minimal value
+            width: Math.max(5, node.width() * scaleX),
+            height: Math.max(node.height() * scaleY),
+        }
+        if (nodeIndex === 1) newAttrs.fontSize === node.fontSize(Math.max(10, node.fontSize() * scaleY))
+        onChange(newAttrs, nodeIndex)
+    }
+
+    const onChange = (newAttrs, nodeIndex) => {
+        setTitleState((prevState) => {
+            const newTitleState = [...prevState]
+            newTitleState[nodeIndex] = newAttrs
+            return newTitleState
+        })
+    }
+    const checkDeselect = (e) => {
+        // deselect when clicked on empty area
+        const clickedOnEmpty = !['titleImage', 'titleText'].includes(e.target.attrs.id)
+        if (clickedOnEmpty) {
+            if (e.target.attrs.name && !e.target.attrs.name.includes('anchor') || !e.target.attrs.name) {
+                setSelectedId(null)
+            }
+        }
+    }
+
     useEffect(() => {
         if (coverStageRef.current && boundingRect && boundingRect.pageWidth && boundingRect.height) {
             const newWidth = boundingRect.pageWidth
@@ -70,49 +172,103 @@ const Cover = forwardRef(({story, boundingRect}, ref) => {
             setImagePos([0, boundingRect.height/2-newHeight/2])
             setImageSize([newWidth, newHeight])
         }
-      }, [boundingRect, coverImage])
+    }, [boundingRect, coverImage])
+
+    useEffect(() => {
+        if (selectedId) {
+            switch (selectedId) {
+                case 'titleImage':
+                    transformerRef.current.nodes([frameImageRef.current])
+                    transformerRef.current.getLayer().batchDraw()
+                    break
+                case 'titleText':
+                    transformerRef.current.nodes([titleTextRef.current])
+                    transformerRef.current.getLayer().batchDraw()
+                    break
+                default:
+                    break
+            }
+        }
+    }, [selectedId])
 
     return (
         <div ref={ref} id='cover-container' className='w-full h-auto bg-white'>
-            <Stage ref={coverStageRef} width={300} height={400}>
-                <Layer key='imageLayer'>
+            <Stage 
+                ref={coverStageRef} 
+                width={300} 
+                height={400}
+                onMouseDown={(e) => checkDeselect(e)}
+                onTouchStart={(e) => checkDeselect(e)}
+            >
+                <Layer key='coverImageLayer'>
                     {coverImage && <Image
-                    id='coverImage'
-                    image={coverImage}
-                    x={imagePos[0]}
-                    y={imagePos[1]}
-                    width={imageSize[0]}
-                    height={imageSize[1]}
+                        id='coverImage'
+                        image={coverImage}
+                        x={imagePos[0]}
+                        y={imagePos[1]}
+                        width={imageSize[0]}
+                        height={imageSize[1]}
                     />}
                 </Layer>
                 <Layer key='titleLayer'>
                     {frameImage && <Image
-                    id='titleImage' 
-                    image={frameImage} 
-                    x={0} 
-                    y={0}
-                    width={imageSize[0]*0.4}
-                    height={imageSize[1]*0.4} 
-                    draggable 
-                    rotation={titleState.frameAngle}
-                    onDragStart={handleDragStart}
-                    onDragEnd={handleDragEnd}
+                        ref={frameImageRef}
+                        id='titleImage' 
+                        image={frameImage} 
+                        x={titleState[0].x}
+                        y={titleState[0].y}
+                        width={titleState[0].width}
+                        height={titleState[0].height}
+                        rotation={titleState[0].angle}
+                        // fill={titleState[0].backgroundColor}
+                        // stroke={titleState[0].borderColor}
+                        isSelected = {titleState[0].id === selectedId} 
+                        draggable
+                        onClick={() => setSelectedId(titleState[0].id)}
+                        onTap={() => setSelectedId(titleState[0].id)}
+                        onDragStart={handleDragStart}
+                        onDragEnd={handleDragEnd}
+                        onTransformEnd={handleTransformEnd}
                     /> }
-                    {frameImage && <Text 
-                    id='titleText'
-                    text={titleState.text} 
-                    x={0} 
-                    y={0}
-                    width={imageSize[0]*0.4}
-                    height={imageSize[1]*0.4}  
-                    draggable
-                    verticalAlign='middle' 
-                    align='center' 
-                    onDragStart={handleDragStart}
-                    onDragEnd={handleDragEnd}
-                    /> }
+                    <Text 
+                        ref={titleTextRef}
+                        id='titleText'
+                        text={titleState[1].text} 
+                        x={titleState[1].x} 
+                        y={titleState[1].y}
+                        rotation={titleState[1].angle}
+                        // fill={titleState[1].backgroundColor}
+                        // stroke={titleState[1].borderColor}
+                        isSelected = {titleState[1].id === selectedId} 
+                        draggable
+                        onClick={() => setSelectedId(titleState[1].id)}
+                        onTap={() => setSelectedId(titleState[1].id)}
+                        verticalAlign='middle' 
+                        align='center'
+                        onDragStart={handleDragStart}
+                        onDragEnd={handleDragEnd}
+                        onTransformEnd={handleTransformEnd}
+                    />
+                    {selectedId && (
+                        <>
+                            <Transformer
+                                ref={transformerRef}
+                                flipEnabled={false}
+                                boundBoxFunc={(oldBox, newBox) => {
+                                    // limit resize
+                                    if (Math.abs(newBox.width) < 5 || Math.abs(newBox.height) < 5) {
+                                    return oldBox;
+                                    }
+                                    return newBox;
+                                }}
+                            />
+                        </>
+                    )}
                 </Layer>
             </Stage>
+            {selectedId && 
+                <UISetting titleItem={titleState[1]} setTitleState={setTitleState} />
+            }
         </div>
     )
 })
@@ -133,7 +289,7 @@ function FlipBook({ story }) {
         width: 600,
     })
     const handleInit = () => {
-        setBoundingRect(flipBookRef.current.pageFlip().getBoundsRect());
+        setBoundingRect(flipBookRef.current.pageFlip().getBoundsRect())
     }
 
   return (

@@ -1,11 +1,10 @@
-import { Div, Image, Panel, PanelHeader, PanelHeaderBack } from '@vkontakte/vkui';
+import { Panel, PanelHeader, PanelHeaderBack } from '@vkontakte/vkui';
 import { useParams, useRouteNavigator } from '@vkontakte/vk-mini-apps-router';
 import PropTypes from 'prop-types';
 import { db, StoryData } from '../api';
 import { eq } from 'drizzle-orm';
-import { forwardRef, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
-import HTMLFlipBook from 'react-pageflip';
-import { BookCover, BookTitle, FlipBook } from '../components';
+import { useCallback, useEffect, useState } from 'react';
+import { FlipBook } from '../components';
 
 
 export const ViewStory = ({ id, fetchedUser }) => {
