@@ -26,7 +26,7 @@ const titleInitialSetting = [
         width: 200,
         height: 200,
         angle: 0,
-        colorGroups: {},
+        colorGroups: [],
         frameNumber: 1
     },
     {
@@ -36,12 +36,12 @@ const titleInitialSetting = [
         width: 200,
         height: 200,
         angle: 0,
-        colorGroup: {
-            borderColor: '#000',
-            backgroundColor: '#000',
-        },
+        colorGroup: [{
+            strokeColor: '#000',
+            fillColor: '#000',
+        }],
         font: 'Arial',
-        isInline: true,
+        textAlign: true,
         text: 'Волшебная сказка'
     },
 ]

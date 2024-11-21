@@ -13,12 +13,12 @@
   }
   
 @font-face {
-    font-family: 'Ruslan-Display';
+    font-family: 'RuslanDisplay-Regular';
     src: url('./assets/Fonts/RuslanDisplay-Regular.ttf') format('truetype');
   }
   
 @font-face {
-    font-family: 'Shantel-Sans-Bold';
+    font-family: 'ShantellSans-Bold';
     src: url('./assets/Fonts/ShantellSans-Bold.ttf') format('truetype');
   }
   

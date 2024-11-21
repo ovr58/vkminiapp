@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import { useEffect, useRef, useState } from 'react'
-import { Stage, Layer, Star, Text, Image } from 'react-konva'
+import { Stage, Layer, Text, Image } from 'react-konva'
 import useImage from 'use-image'
 
 function BookTitle({story}) {
