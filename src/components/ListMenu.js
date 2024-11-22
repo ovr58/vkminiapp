@@ -2,11 +2,14 @@ import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import PropTypes from 'prop-types';
 
 
-const ListMenu = ({children, list, setFunction, selected}) => {
+const ListMenu = ({children, listOfValues, listOfLabels, setFunction, selected}) => {
 
   return (
     <Menu>
-      <MenuButton className="rounded-md text-black shadow-inner shadow-white/10 focus:outline-none data-[hover]:bg-slate-300 data-[open]:bg-gray-700 data-[focus]:outline-1 data-[focus]:outline-white">
+      <MenuButton 
+        className="rounded-md text-black shadow-inner shadow-white/10 focus:outline-none data-[hover]:bg-slate-300 data-[open]:bg-gray-700 data-[focus]:outline-1 data-[focus]:outline-white"
+        onClick={selected === null ? setFunction : () => {}}
+      >
         <span className="">
           {children}
         </span>
@@ -16,7 +19,7 @@ const ListMenu = ({children, list, setFunction, selected}) => {
         transition
         className="w-1/3 bg-slate-200 rounded-xl z-50 origin-top transition duration-200 ease-out data-[closed]:scale-95 data-[closed]:opacity-0"
       >
-        {list.map((item, i) => (
+        {selected && listOfValues.map((item, i) => (
             <MenuItem key={`ListMenuItem${i}`}>
             <button 
                 className={`
@@ -32,8 +35,8 @@ const ListMenu = ({children, list, setFunction, selected}) => {
                 `}
                 onClick={() => setFunction(item)}
             >
-                <p className="text-black" alt={item}>
-                    {item}
+                <p className="text-black" alt={listOfLabels[i]}>
+                    {listOfLabels[i]}
                 </p>
             </button>
             </MenuItem>
@@ -47,7 +50,8 @@ export default ListMenu
 
 ListMenu.propTypes = {
     children: PropTypes.object,
-    list: PropTypes.array,
+    listOfValues: PropTypes.array,
+    listOfLabels: PropTypes.array,
     selected: PropTypes.any,
     setFunction: PropTypes.func
 }

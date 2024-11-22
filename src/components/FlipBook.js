@@ -4,6 +4,8 @@ import { Image, Layer, Stage, Text, Transformer } from 'react-konva'
 import HTMLFlipBook from 'react-pageflip'
 import useImage from 'use-image'
 import UISetting from './UISetting'
+import WebFont from 'webfontloader'
+import { getAllFonts } from '../utils'
 
 const Page = forwardRef(({children, story, index}, ref) => {
     return (
@@ -26,7 +28,7 @@ const titleInitialSetting = [
         width: 200,
         height: 200,
         angle: 0,
-        colorGroups: [],
+        colorGroups: {},
         frameNumber: 1
     },
     {
@@ -36,13 +38,13 @@ const titleInitialSetting = [
         width: 200,
         height: 200,
         angle: 0,
-        colorGroup: [{
+        colorGroup: {
             strokeColor: '#000',
             fillColor: '#000',
-        }],
+        },
         font: 'Arial',
-        textAlign: true,
-        text: 'Волшебная сказка'
+        textAlign: 'center',
+        text: 'Волшебная сказка про дракона и принцессу',
     },
 ]
 
@@ -55,6 +57,17 @@ const Cover = forwardRef(({story, boundingRect}, ref) => {
 
     const [titleState, setTitleState] = useState(titleInitialSetting)
     const [selectedId, setSelectedId] = useState(null)
+    const [isFontsLoaded, setIsFontsLoaded] = useState(false)
+
+    useEffect(() => {
+        WebFont.load({
+            google: {
+                families: getAllFonts()
+            },
+            active: () => setIsFontsLoaded(true)
+        })
+    }, [])
+
 
     const [frameImage] = useImage(`/frame00${titleState[0].frameNumber}.svg`)
     const [coverImage] = useImage(story.imgUrl)
@@ -190,7 +203,7 @@ const Cover = forwardRef(({story, boundingRect}, ref) => {
             }
         }
     }, [selectedId])
-
+    console.log('COVER - ', titleState)
     return (
         <div ref={ref} id='cover-container' className='w-full h-auto bg-white'>
             <Stage 
@@ -233,18 +246,19 @@ const Cover = forwardRef(({story, boundingRect}, ref) => {
                     <Text 
                         ref={titleTextRef}
                         id='titleText'
-                        text={titleState[1].text} 
+                        text={titleState[1].text}
+                        fontFamily={titleState[1].font} 
                         x={titleState[1].x} 
                         y={titleState[1].y}
                         rotation={titleState[1].angle}
-                        // fill={titleState[1].backgroundColor}
-                        // stroke={titleState[1].borderColor}
+                        fill={titleState[1].colorGroup.fillColor}
+                        stroke={titleState[1].colorGroup.strokeColor}
                         isSelected = {titleState[1].id === selectedId} 
                         draggable
                         onClick={() => setSelectedId(titleState[1].id)}
                         onTap={() => setSelectedId(titleState[1].id)}
                         verticalAlign='middle' 
-                        align='center'
+                        align={titleState[1].textAlign}
                         onDragStart={handleDragStart}
                         onDragEnd={handleDragEnd}
                         onTransformEnd={handleTransformEnd}
@@ -266,7 +280,7 @@ const Cover = forwardRef(({story, boundingRect}, ref) => {
                     )}
                 </Layer>
             </Stage>
-            {selectedId && 
+            {selectedId && isFontsLoaded &&
                 <UISetting titleItem={titleState[1]} setTitleState={setTitleState} />
             }
         </div>
