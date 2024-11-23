@@ -4,7 +4,7 @@ import { CiTextAlignCenter, CiTextAlignLeft, CiTextAlignRight } from "react-icon
 import { BiColorFill } from "react-icons/bi"
 import ListMenu from './ListMenu'
 import { generateLineBreaks, getAllFonts } from '../utils'
-import { useState } from 'react'
+import { Fragment, useState } from 'react'
 import { ChromePicker } from 'react-color'
 import { AiOutlineEnter } from 'react-icons/ai'
 
@@ -41,9 +41,8 @@ function UISetting({titleItem, setTitleState}) {
               {children}
             </ListMenu>,
           visual:[ 
-          ({color, classNameString}) => 
-          <SiAdobefonts color={color} className={classNameString} />
-        ], 
+            <SiAdobefonts key='SiAdobefonts' color='black' className='h-full w-auto hover:animate-bounce' />
+          ], 
         },
         {
           name: 'Text Align', 
@@ -67,15 +66,11 @@ function UISetting({titleItem, setTitleState}) {
               {children}
             </ListMenu>, 
           visual: [
-            ({color, classNameString}) => 
-              <CiTextAlignLeft color={color} className={classNameString} />,
-            ({color, classNameString}) => 
-              <CiTextAlignCenter color={color} className={classNameString} />,
-            ({color, classNameString}) => 
-              <CiTextAlignRight color={color} className={classNameString} />,
-
+            <CiTextAlignLeft key='CiTextAlignLeft' color='black' className='h-full w-auto hover:animate-bounce' />,
+            <CiTextAlignCenter key='CiTextAlignCenter' color='black' className='h-full w-auto hover:animate-bounce' />,
+            <CiTextAlignRight key='CiTextAlignRight' color='black' className='h-full w-auto hover:animate-bounce' />,
           ].filter((item) => {
-            const functionName = item({}).type.name.toLowerCase();
+            const functionName = item.type.name.toLowerCase();
             return functionName.includes(titleItem.textAlign);
           }),
         },
@@ -103,7 +98,7 @@ function UISetting({titleItem, setTitleState}) {
             </ListMenu>
           </>,
           visual: [
-            ({color, classNameString}) => <AiOutlineEnter color={color} className={classNameString} />
+            <AiOutlineEnter key='AiOutlineEnter' color='black' className='h-full w-auto hover:animate-bounce' />
           ],
         }, 
         {
@@ -144,7 +139,7 @@ function UISetting({titleItem, setTitleState}) {
             }
           </>,
           visual: [
-            ({color, classNameString}) => <BiColorFill color={color} className={classNameString} />
+            <BiColorFill key='BiColorFill' color='black' className='h-full w-auto hover:animate-bounce' />
           ],
         },
       ]
@@ -153,16 +148,18 @@ function UISetting({titleItem, setTitleState}) {
       break;
   }
   return (
-    <div className='absolute top-0'>
-      <div className='flex flex-row gap-5 h-20 p-4 rounded-xl bg-neutral-400 justify-center'>
-        {
-          UIItem.map((item, i) => (
-            <div key={`item${item.name}/${i}`}>
-              {item.element(item.visual[0]('black', 'h-full w-auto hover:animate-bounce'))}
-            </div>
-          )
-        )}
-      </div>
+    <div className='flex flex-row gap-5 h-14 p-2 rounded-xl bg-neutral-400 justify-center'>
+      {
+        UIItem.map((item, i) => (
+          <Fragment key={`${item.name}/${i}`}>
+            {
+              item.element(
+                item.visual[0]
+              )
+            }
+          </Fragment>
+        )
+      )}
     </div>
   )
 }

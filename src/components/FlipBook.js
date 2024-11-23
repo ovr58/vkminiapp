@@ -58,6 +58,7 @@ const Cover = forwardRef(({story, boundingRect}, ref) => {
     const [titleState, setTitleState] = useState(titleInitialSetting)
     const [selectedId, setSelectedId] = useState(null)
     const [isFontsLoaded, setIsFontsLoaded] = useState(false)
+    const [uiSetPosition, setUiSettingPosition] = useState({top: 0, left: 0})
 
     useEffect(() => {
         WebFont.load({
@@ -188,7 +189,23 @@ const Cover = forwardRef(({story, boundingRect}, ref) => {
     }, [boundingRect, coverImage])
 
     useEffect(() => {
-        if (selectedId) {
+        if (selectedId && transformerRef.current) {
+            const stageNode = coverStageRef.current;
+            const selectedNode = stageNode.findOne(`#${selectedId}`)
+            if (selectedNode) {
+                const box = selectedNode.getClientRect();
+                const stageBox = stageNode.container().getBoundingClientRect();
+                console.log('BOX - ', box, stageBox)
+                let topPosition = stageBox.top + box.y + box.height;
+                if (topPosition > stageBox.top + stageBox.height * 0.7) {
+                    topPosition = stageBox.top + box.y - 120;
+                }
+
+                setUiSettingPosition({
+                    top: topPosition,
+                    left: stageBox.left + box.x + box.width / 2,
+                });
+            }
             switch (selectedId) {
                 case 'titleImage':
                     transformerRef.current.nodes([frameImageRef.current])
@@ -203,7 +220,7 @@ const Cover = forwardRef(({story, boundingRect}, ref) => {
             }
         }
     }, [selectedId])
-    console.log('COVER - ', titleState)
+
     return (
         <div ref={ref} id='cover-container' className='w-full h-auto bg-white'>
             <Stage 
@@ -281,8 +298,17 @@ const Cover = forwardRef(({story, boundingRect}, ref) => {
                 </Layer>
             </Stage>
             {selectedId && isFontsLoaded &&
-                <UISetting titleItem={titleState[1]} setTitleState={setTitleState} />
-            }
+                <div
+                    style={{
+                    position: 'absolute',
+                    top: `${uiSetPosition.top}px`,
+                    left: `${uiSetPosition.left}px`,
+                    transform: 'translateX(-50%)',
+                    }}
+                >     
+                    <UISetting titleItem={titleState[1]} setTitleState={setTitleState} />
+                </div>
+            }   
         </div>
     )
 })

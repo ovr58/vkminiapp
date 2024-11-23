@@ -1,3 +1,3 @@
-import { getAllFonts, generateLineBreaks } from './helpers';
+import { getAllFonts, generateLineBreaks, getSvgChanged } from './helpers';
 export { transformVKBridgeAdaptivity } from './transformVKBridgeAdaptivity';
-export { getAllFonts, generateLineBreaks };
+export { getAllFonts, generateLineBreaks, getSvgChanged };

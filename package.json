@@ -32,6 +32,8 @@
     "react-icons": "^5.3.0",
     "react-konva": "^18.2.10",
     "react-pageflip": "^2.0.3",
+    "svg-parser": "^2.0.4",
+    "svgson": "^5.3.1",
     "use-image": "^1.1.1",
     "uuid": "^10.0.0",
     "webfontloader": "^1.6.28"
