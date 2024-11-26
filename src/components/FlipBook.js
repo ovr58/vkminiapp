@@ -5,7 +5,8 @@ import HTMLFlipBook from 'react-pageflip'
 import useImage from 'use-image'
 import UISetting from './UISetting'
 import WebFont from 'webfontloader'
-import { getAllFonts } from '../utils'
+import { getAllFonts, getSvgChanged } from '../utils'
+import useSvgChanged from '../hooks/useChangedSvg'
 
 const Page = forwardRef(({children, story, index}, ref) => {
     return (
@@ -38,7 +39,7 @@ const titleInitialSetting = [
         width: 200,
         height: 200,
         angle: 0,
-        colorGroup: {
+        colorGroups: {
             strokeColor: '#000',
             fillColor: '#000',
         },
@@ -69,8 +70,7 @@ const Cover = forwardRef(({story, boundingRect}, ref) => {
         })
     }, [])
 
-
-    const [frameImage] = useImage(`/frame00${titleState[0].frameNumber}.svg`)
+    const [frameImage] = useSvgChanged(`/frame00${titleState[0].frameNumber}.svg`, titleState, setTitleState)
     const [coverImage] = useImage(story.imgUrl)
 
     const [imageSize, setImageSize] = useState([300,400])
@@ -268,8 +268,8 @@ const Cover = forwardRef(({story, boundingRect}, ref) => {
                         x={titleState[1].x} 
                         y={titleState[1].y}
                         rotation={titleState[1].angle}
-                        fill={titleState[1].colorGroup.fillColor}
-                        stroke={titleState[1].colorGroup.strokeColor}
+                        fill={titleState[1].colorGroups.fillColor}
+                        stroke={titleState[1].colorGroups.strokeColor}
                         isSelected = {titleState[1].id === selectedId} 
                         draggable
                         onClick={() => setSelectedId(titleState[1].id)}
@@ -306,7 +306,9 @@ const Cover = forwardRef(({story, boundingRect}, ref) => {
                     transform: 'translateX(-50%)',
                     }}
                 >     
-                    <UISetting titleItem={titleState[1]} setTitleState={setTitleState} />
+                    <UISetting titleItem={titleState.filter(
+                        (item) => item.id === selectedId
+                    )[0]} setTitleState={setTitleState} />
                 </div>
             }   
         </div>

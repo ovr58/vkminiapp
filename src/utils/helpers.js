@@ -1,5 +1,4 @@
-import { parse } from "svg-parser"
-import { stringify } from "svgson"
+import { parse, stringify } from "svgson"
 
 export const getAllFonts = () => {
     const objFontPaths = Object.keys(import.meta.glob('../assets/Fonts/*.ttf'))
@@ -44,19 +43,38 @@ export const generateLineBreaks = (str) => {
 export const getSvgChanged = async (svg, titleState, setTitleState) => {
   const response = await fetch(svg)
   const svgText = await response.text()
-  const svgObject = parse(svgText)
+  const svgObject = await parse(svgText)
 
-  const fillColors = new Set()
-  const strokeColors = new Set()
+  const fillColors = {}
+  const strokeColors = {}
+
+  const getObjeFromNodeStyle = (node) => {
+
+    const styleString = node.attributes.style
+    const styleObject = styleString.split(';').reduce((acc, style) => {
+      const [key, value] = style.split(':');
+      if (key && value) {
+        acc[key.trim()] = value.trim();
+      }
+      return acc;
+    }, {});
+
+    return styleObject
+  }
 
   // рекурсия для извлечения уникальных цветов
   const extractColors = (node) => {
-    if (node.properties) {
-      if (node.properties.fill) {
-        fillColors.add(node.properties.fill)
-      }
-      if (node.properties.stroke) {
-        strokeColors.add(node.properties.stroke)
+    console.log('NODE - ', node)  
+    if (node.attributes) {
+      if (node.attributes.style) {
+        const styleObject = getObjeFromNodeStyle(node)
+        for (let [key, value] of Object.entries(styleObject)) {
+          if (value === 'none') {
+            styleObject[key] = 'nocolor'
+          }
+        }
+        styleObject.fill && fillColors[styleObject.fill] ? fillColors[styleObject.fill] = [...fillColors[styleObject.fill],node.attributes.id] : fillColors[styleObject.fill] = [node.attributes.id]
+        styleObject.stroke && strokeColors[styleObject.stroke] ? strokeColors[styleObject.stroke] = [...strokeColors[styleObject.stroke],node.attributes.id] : strokeColors[styleObject.stroke] = [node.attributes.id]
       }
     }
     if (node.children) {
@@ -66,32 +84,32 @@ export const getSvgChanged = async (svg, titleState, setTitleState) => {
 
   extractColors(svgObject)
 
+
   const newColorGroup = {}
-  let index=1
-  fillColors.forEach((color) => {
-    newColorGroup[`color${index}`] = color
-    index++
-  })
-  index=1
-  strokeColors.forEach((color) => {
-    newColorGroup[`stroke${index}`] = color
-    index++
-  })
-  console.log('NEW COLOR GROUP - ', titleState, newColorGroup)
-  if (Object.keys(titleState.colorGroups).length === 0) {
+  for (let [key, value] of Object.entries(fillColors)) {
+    newColorGroup[`fill${value.join('/')}`] = key
+  }
+
+  for (let [key, value] of Object.entries(strokeColors)) {
+    newColorGroup[`stroke${value.join('/')}`] = key
+  }
+
+  console.log('NEW COLOR GROUP - ', titleState, fillColors, strokeColors)
+
+  if (Object.keys(titleState[0].colorGroups).length === 0) {
     setTitleState((prevState) => {
       const newTitleState = [...prevState]
-      const nodeIndex = newTitleState.findIndex((item) => item.id === titleState.id)
+      const nodeIndex = newTitleState.findIndex((item) => item.id === titleState[0].id)
       newTitleState[nodeIndex] = {  
-        ...titleState, 
-        colorGroup: newColorGroup
+        ...titleState[0], 
+        colorGroups: newColorGroup
       }
       return newTitleState
     })
     return svgText
   }
 
-  const currentColorGroup = titleState.colorGroups
+  const currentColorGroup = titleState[0].colorGroups
   let isDifferent = false
 
   for (const key in newColorGroup) {
@@ -105,15 +123,20 @@ export const getSvgChanged = async (svg, titleState, setTitleState) => {
     return svgText
   }
 
-  const updateColors = (node) => {
-    if (node.properties) {
-      for (const key in currentColorGroup) {
-        if (key.startsWith('color') && node.properties.fill === newColorGroup[key]) {
-          node.properties.fill = currentColorGroup[key]
+  const updateColors = (node) => { 
+    if (node.attributes) {
+      if (node.attributes.style) {
+        const styleObject = getObjeFromNodeStyle(node)
+        for (const key in currentColorGroup) {
+          if (key.startsWith('fill') && key.includes(node.attributes.id)) {
+            styleObject.fill = currentColorGroup[key]
+          }
+          if (key.startsWith('stroke') && key.includes(node.attributes.id)) {
+            styleObject.stroke = currentColorGroup[key]
+          }
         }
-        if (key.startsWith('colorStroke') && node.properties.stroke === newColorGroup[key]) {
-          node.properties.stroke = currentColorGroup[key]
-        }
+        const styleString = Object.entries(styleObject).map(([key, value]) => `${key}:${value}`).join(';')
+        node.attributes.style = styleString
       }
     }
     if (node.children) {
@@ -124,6 +147,8 @@ export const getSvgChanged = async (svg, titleState, setTitleState) => {
   updateColors(svgObject)
 
   const updatedSvgText = stringify(svgObject)
+
+  console.log('UPDATED SVG - ', svgObject, updatedSvgText)
 
   return updatedSvgText
 }

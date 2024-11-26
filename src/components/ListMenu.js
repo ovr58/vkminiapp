@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 
 const ListMenu = ({children, listOfValues, listOfLabels, setFunction, selected}) => {
-
+  console.log('ListMenu - ', listOfValues)
   return (
     <Menu>
       <MenuButton 
