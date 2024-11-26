@@ -25,19 +25,20 @@ function UISetting({titleItem, setTitleState}) {
             name: 'Frame',
             element: (children) => 
               <ListMenu 
-                listOfValues = {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]} 
-                listOfLabels = {['С рамкой', 'Без рамки']} 
-                setFunction={(item) => setTitleState((prevState) => {
+                listOfValues = {[]} 
+                listOfLabels = {[]} 
+                setFunction={() => setTitleState((prevState) => {
                   const newTitleState = [...prevState]
                   const nodeIndex = newTitleState.findIndex((item) => item.id === titleItem.id)
                   newTitleState[nodeIndex] = {  
                     ...titleItem, 
-                    frame: item
+                    colorGroups: {},
+                    frameNumber: (titleItem.frameNumber % 11) + 1
                   }
                   return newTitleState
                 })
                 } 
-                selected={titleItem.frame} 
+                selected={null} 
               >
                 {children}
             </ListMenu>,
@@ -60,7 +61,9 @@ function UISetting({titleItem, setTitleState}) {
               {isColorPickerOpen && 
               <ChromePicker 
                   key='colorPicker'
-                  className='absolute top-15'
+                  className='absolute top-14'
+                  disableAlpha={true}
+                  styles={{default: {picker: {boxShadow: 'none'}}}}
                   color={titleItem.colorGroups[isColorPickerOpen]}
                   onChangeComplete={(color) => {
                   setTitleState((prevState) => {
@@ -187,8 +190,10 @@ function UISetting({titleItem, setTitleState}) {
               {isColorPickerOpen && 
               <ChromePicker 
                   key='colorPicker'
-                  className='absolute top-15'
+                  className='absolute top-14'
                   color={titleItem.colorGroups[isColorPickerOpen]}
+                  disableAlpha={true}
+                  styles={{default: {picker: {boxShadow: 'none'}}}}
                   onChangeComplete={(color) => {
                   setTitleState((prevState) => {
                     const newTitleState = [...prevState]

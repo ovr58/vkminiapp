@@ -5,7 +5,7 @@ import HTMLFlipBook from 'react-pageflip'
 import useImage from 'use-image'
 import UISetting from './UISetting'
 import WebFont from 'webfontloader'
-import { getAllFonts, getSvgChanged } from '../utils'
+import { getAllFonts } from '../utils'
 import useSvgChanged from '../hooks/useChangedSvg'
 
 const Page = forwardRef(({children, story, index}, ref) => {

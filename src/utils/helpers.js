@@ -64,7 +64,6 @@ export const getSvgChanged = async (svg, titleState, setTitleState) => {
 
   // рекурсия для извлечения уникальных цветов
   const extractColors = (node) => {
-    console.log('NODE - ', node)  
     if (node.attributes) {
       if (node.attributes.style) {
         const styleObject = getObjeFromNodeStyle(node)
@@ -93,8 +92,6 @@ export const getSvgChanged = async (svg, titleState, setTitleState) => {
   for (let [key, value] of Object.entries(strokeColors)) {
     newColorGroup[`stroke${value.join('/')}`] = key
   }
-
-  console.log('NEW COLOR GROUP - ', titleState, fillColors, strokeColors)
 
   if (Object.keys(titleState[0].colorGroups).length === 0) {
     setTitleState((prevState) => {
@@ -147,8 +144,6 @@ export const getSvgChanged = async (svg, titleState, setTitleState) => {
   updateColors(svgObject)
 
   const updatedSvgText = stringify(svgObject)
-
-  console.log('UPDATED SVG - ', svgObject, updatedSvgText)
 
   return updatedSvgText
 }
