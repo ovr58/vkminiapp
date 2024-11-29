@@ -7,7 +7,6 @@ import UISetting from './UISetting'
 import WebFont from 'webfontloader'
 import { getAllFonts } from '../utils'
 import useSvgChanged from '../hooks/useChangedSvg'
-import { CgNametag } from 'react-icons/cg'
 
 const Page = forwardRef(({children, story, index}, ref) => {
     return (
@@ -21,34 +20,6 @@ const Page = forwardRef(({children, story, index}, ref) => {
       </div>
     )
 })
-
-const titleInitialSetting = [
-    {
-        id: 'titleImage',
-        x: 0,
-        y: 0,
-        width: 200,
-        height: 200,
-        angle: 0,
-        colorGroups: {},
-        frameNumber: 1
-    },
-    {
-        id: 'titleText',
-        x: 0,
-        y: 0,
-        width: 200,
-        height: 200,
-        angle: 0,
-        colorGroups: {
-            strokeColor: '#000',
-            fillColor: '#000',
-        },
-        font: 'Arial',
-        textAlign: 'center',
-        text: 'Волшебная сказка про дракона и принцессу',
-    },
-]
 
 const Cover = forwardRef(({story, boundingRect}, ref) => {
 
@@ -197,7 +168,7 @@ const Cover = forwardRef(({story, boundingRect}, ref) => {
 
     useEffect(() => {
         if (selectedId && transformerRef.current) {
-            
+
             const stageNode = coverStageRef.current;
             const selectedNode = stageNode.findOne(`#${selectedId}`)
             if (selectedNode) {
@@ -315,7 +286,7 @@ const Cover = forwardRef(({story, boundingRect}, ref) => {
                     transform: 'translateX(-50%)',
                     }}
                 >     
-                    <UISetting titleItem={titleState.filter(
+                    <UISetting storyId={story.storyId} titleItem={titleState.filter(
                         (item) => item.id === selectedId
                     )[0]} setTitleState={setTitleState} />
                 </div>

@@ -1,4 +1,4 @@
-import PropTypes, { element } from 'prop-types'
+import PropTypes from 'prop-types'
 import { SiAdobefonts  } from "react-icons/si"
 import { CiTextAlignCenter, CiTextAlignLeft, CiTextAlignRight } from "react-icons/ci"
 import { BiColorFill } from "react-icons/bi"
@@ -9,12 +9,29 @@ import { ChromePicker } from 'react-color'
 import { AiOutlineEnter } from 'react-icons/ai'
 import { IoColorPaletteOutline } from 'react-icons/io5'
 import { LiaImages } from 'react-icons/lia'
+import { db, StoryData } from '../api'
+import { eq } from 'drizzle-orm'
+import { IoIosSave } from 'react-icons/io'
 
-function UISetting({titleItem, setTitleState}) {
+function UISetting({storyId, titleItem, setTitleState}) {
 
   const [isColorPickerOpen, setIsColorPickerOpen] = useState(false)
 
-  const updateInDB = async (storyId)
+  const updateInDB = async (storyId, titleItem) => {
+    const updatedData = {}
+    titleItem.id === 'titleImage' ? updatedData.coverObjectImage = titleItem : updatedData.coverObjectText = titleItem
+
+    try {
+      const result = await db.update(StoryData)
+        .set(updatedData)
+        .where(eq(StoryData.storyId, storyId))
+        .returning({ storyId: StoryData.storyId })
+      return result
+      } catch (error) {
+        console.error('Error updating story in DB - ', error)
+      }
+  }
+
   const getUIItem = useCallback(() => {
 
     let UIItem
@@ -22,6 +39,21 @@ function UISetting({titleItem, setTitleState}) {
     switch (titleItem.id) {
       case 'titleImage':
         UIItem = [
+          {
+            name: 'Save',
+            element: (children) =>
+              <ListMenu 
+                listOfValues = {[]} 
+                listOfLabels = {[]} 
+                setFunction={async () => await updateInDB(storyId, titleItem)}
+                selected={null} 
+              >
+                {children}
+              </ListMenu>,
+              visual:[ 
+                <IoIosSave key='SiAdobefonts' color='black' className='h-full w-auto hover:animate-bounce' />
+              ],
+          },
           {
             name: 'Frame',
             element: (children) => 
@@ -101,21 +133,15 @@ function UISetting({titleItem, setTitleState}) {
               <ListMenu 
                 listOfValues = {[]} 
                 listOfLabels = {[]} 
-                setFunction={() => setTitleState((prevState) => {
-                  const newTitleState = [...prevState]
-                  const nodeIndex = newTitleState.findIndex((item) => item.id === titleItem.id)
-                  newTitleState[nodeIndex] = {  
-                    ...titleItem, 
-                    text: generateLineBreaks(titleItem.text)[0]
-                  }
-                  return newTitleState
-                })
-                } 
+                setFunction={async () => await updateInDB(storyId, titleItem)}
                 selected={null} 
               >
                 {children}
               </ListMenu>,
-          }
+              visual:[ 
+                <IoIosSave key='SiAdobefonts' color='black' className='h-full w-auto hover:animate-bounce' />
+              ],
+          },
           {
             name: 'Font',
             element: (children) => 
@@ -247,7 +273,7 @@ function UISetting({titleItem, setTitleState}) {
     }
     return UIItem
 
-  }, [titleItem, setTitleState, isColorPickerOpen])
+  }, [titleItem, setTitleState, isColorPickerOpen, storyId])
 
   const UIItem = useMemo(() => getUIItem(), [getUIItem])
 
@@ -271,6 +297,7 @@ function UISetting({titleItem, setTitleState}) {
 export default UISetting
 
 UISetting.propTypes = {
+    storyId: PropTypes.any,
     titleItem: PropTypes.object,
     setTitleState: PropTypes.func
 }
