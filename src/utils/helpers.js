@@ -147,3 +147,4 @@ export const getSvgChanged = async (svg, titleState, setTitleState) => {
 
   return updatedSvgText
 }
+

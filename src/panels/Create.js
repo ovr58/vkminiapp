@@ -63,7 +63,7 @@ export const Create = ({ id, fetchedUser }) => {
       setPopout(<ScreenSpinner state="loading" size="large" caption="Лучше один раз увидеть..." />)
       console.log('GEMENI ANSWER - ', gemeniaiAnswer)
       const coverImgPrompt = `Generate an illustration that matches the prompt: ${gemeniaiAnswer.cover_prompt}`
-      const generatedResponse  = await axios.post('https://imggenerateapi-38d36a8b3280.herokuapp.com/generate-image', { prompt: coverImgPrompt })
+      const generatedResponse  = await axios.post('http://localhost:5000/generate-image', { prompt: coverImgPrompt })
       
       console.log('RESPONSE - ', generatedResponse)
 
@@ -89,6 +89,38 @@ export const Create = ({ id, fetchedUser }) => {
         storyType: promt.storyType,
         imageType: promt.coverImg,
         output: JSON.parse(output),
+        coverObjectText: {
+          "id": "titleText",
+          "x": 50.29267033533296,
+          "y": 392.9841224019432,
+          "width": 360.3848953829873,
+          "height": 113.17213825939675,
+          "angle": 0,
+          "colorGroups": {
+            "strokeColor": "#ea1212",
+            "fillColor": "#ea1010"
+          },
+          "font": "ShantellSans-Bold",
+          "fontSize": 54.5379681983828,
+          "textAlign": "center",
+          "text": output.book_title,
+        },
+        coverObjectImage: {
+          "id": "titleImage",
+          "x": 33.98132894014276,
+          "y": 350.9999999999998,
+          "width": 398.89071938495334,
+          "height": 199.99999999999946,
+          "angle": 0,
+          "colorGroups": {
+            "fillstop4": "undefined",
+            "fillpath2700-3": "#ffffff",
+            "fillpath2700/path2702": "#000000 icc-color(sRGB-IEC61966-2, 0.1, 0, 0, 0)",
+            "strokestop4": "undefined",
+            "strokepath2700-3/path2700/path2702": "nocolor"
+          },
+          "frameNumber": 3,
+        },
         coverImage: coverImgB64
       }).returning({storyId: StoryData.storyId})
       return result

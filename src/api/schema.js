@@ -10,6 +10,8 @@ export const StoryData = pgTable('storyData', {
     imageType: varchar('imageType'),
     output: json('output'),
     coverImage: text('coverImage'),
+    coverObjectText: json('coverObject'),
+    coverObjectImage: json('coverObjectImage'),
     chapter1Img: text('chapter1Img'),
     chapter2Img: text('chapter2Img'),
     chapter3Img: text('chapter3Img'),

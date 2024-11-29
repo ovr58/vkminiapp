@@ -36,11 +36,11 @@ const ListMenu = ({children, listOfValues, listOfLabels, setFunction, selected})
                 onClick={() => setFunction(item)}
             >
                 <div className="text-black" alt={listOfLabels[i]}>
-                    {listOfLabels[i].includes('Цвет') ? 
+                    {listOfLabels[i].length > 0 ? listOfLabels[i].includes('Цвет') ? 
                     <div className='flex m-1 gap-3'>
                       <p>{`Цвет ${listOfLabels[i].split(' ')[1]} -`}</p>
                       <span className="w-6 h-6 rounded-full pr-4" style={{backgroundColor: listOfLabels[i].split(' ')[3]}}></span>
-                    </div> : listOfLabels[i]}
+                    </div> : listOfLabels[i] : listOfLabels[i]}
                 </div>
             </button>
             </MenuItem>

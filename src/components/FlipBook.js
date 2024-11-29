@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect, useRef, useState } from 'react'
+import { forwardRef, useEffect, useRef, useState } from 'react'
 import PropTypes from 'prop-types'
 import { Image, Layer, Stage, Text, Transformer } from 'react-konva'
 import HTMLFlipBook from 'react-pageflip'
@@ -7,6 +7,7 @@ import UISetting from './UISetting'
 import WebFont from 'webfontloader'
 import { getAllFonts } from '../utils'
 import useSvgChanged from '../hooks/useChangedSvg'
+import { CgNametag } from 'react-icons/cg'
 
 const Page = forwardRef(({children, story, index}, ref) => {
     return (
@@ -56,7 +57,8 @@ const Cover = forwardRef(({story, boundingRect}, ref) => {
     const titleTextRef = useRef()
     const transformerRef = useRef()
 
-    const [titleState, setTitleState] = useState(titleInitialSetting)
+    const [titleState, setTitleState] = useState([story.coverObjectImage, story.coverObjectText])
+    const titleStateRef = useRef(titleState)
     const [selectedId, setSelectedId] = useState(null)
     const [isFontsLoaded, setIsFontsLoaded] = useState(false)
     const [uiSetPosition, setUiSettingPosition] = useState({top: 0, left: 0})
@@ -68,6 +70,7 @@ const Cover = forwardRef(({story, boundingRect}, ref) => {
             },
             active: () => setIsFontsLoaded(true)
         })
+        console.log('FONTS LOADED')
     }, [])
 
     const [frameImage] = useSvgChanged(`/frame00${titleState[0].frameNumber}.svg`, titleState, setTitleState)
@@ -155,16 +158,20 @@ const Cover = forwardRef(({story, boundingRect}, ref) => {
             width: Math.max(5, node.width() * scaleX),
             height: Math.max(node.height() * scaleY),
         }
-        if (nodeIndex === 1) newAttrs.fontSize === node.fontSize(Math.max(10, node.fontSize() * scaleY))
+        if (nodeIndex === 1) {
+            newAttrs.fontSize = Math.max(10, node.fontSize() * scaleY)
+        }
         onChange(newAttrs, nodeIndex)
     }
 
     const onChange = (newAttrs, nodeIndex) => {
-        setTitleState((prevState) => {
-            const newTitleState = [...prevState]
-            newTitleState[nodeIndex] = newAttrs
-            return newTitleState
-        })
+        const newTitleState = [...titleStateRef.current]
+        newTitleState[nodeIndex] = newAttrs
+        if (JSON.stringify(titleStateRef.current) !== JSON.stringify(newTitleState)) {
+            setTitleState(newTitleState)
+            titleStateRef.current = newTitleState
+            console.log('NEW TITLE STATE - ', newTitleState)
+        }
     }
     const checkDeselect = (e) => {
         // deselect when clicked on empty area
@@ -190,6 +197,7 @@ const Cover = forwardRef(({story, boundingRect}, ref) => {
 
     useEffect(() => {
         if (selectedId && transformerRef.current) {
+            
             const stageNode = coverStageRef.current;
             const selectedNode = stageNode.findOne(`#${selectedId}`)
             if (selectedNode) {
@@ -250,8 +258,6 @@ const Cover = forwardRef(({story, boundingRect}, ref) => {
                         width={titleState[0].width}
                         height={titleState[0].height}
                         rotation={titleState[0].angle}
-                        // fill={titleState[0].backgroundColor}
-                        // stroke={titleState[0].borderColor}
                         isSelected = {titleState[0].id === selectedId} 
                         draggable
                         onClick={() => setSelectedId(titleState[0].id)}
@@ -260,13 +266,16 @@ const Cover = forwardRef(({story, boundingRect}, ref) => {
                         onDragEnd={handleDragEnd}
                         onTransformEnd={handleTransformEnd}
                     /> }
-                    <Text 
+                    {isFontsLoaded && <Text 
                         ref={titleTextRef}
                         id='titleText'
                         text={titleState[1].text}
-                        fontFamily={titleState[1].font} 
+                        fontFamily={titleState[1].font}
+                        fontSize={titleState[1].fontSize}
                         x={titleState[1].x} 
                         y={titleState[1].y}
+                        width={titleState[1].width}
+                        height={titleState[1].height}
                         rotation={titleState[1].angle}
                         fill={titleState[1].colorGroups.fillColor}
                         stroke={titleState[1].colorGroups.strokeColor}
@@ -279,7 +288,7 @@ const Cover = forwardRef(({story, boundingRect}, ref) => {
                         onDragStart={handleDragStart}
                         onDragEnd={handleDragEnd}
                         onTransformEnd={handleTransformEnd}
-                    />
+                    />}
                     {selectedId && (
                         <>
                             <Transformer

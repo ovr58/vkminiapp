@@ -1,4 +1,4 @@
-import PropTypes from 'prop-types'
+import PropTypes, { element } from 'prop-types'
 import { SiAdobefonts  } from "react-icons/si"
 import { CiTextAlignCenter, CiTextAlignLeft, CiTextAlignRight } from "react-icons/ci"
 import { BiColorFill } from "react-icons/bi"
@@ -14,6 +14,7 @@ function UISetting({titleItem, setTitleState}) {
 
   const [isColorPickerOpen, setIsColorPickerOpen] = useState(false)
 
+  const updateInDB = async (storyId)
   const getUIItem = useCallback(() => {
 
     let UIItem
@@ -94,6 +95,27 @@ function UISetting({titleItem, setTitleState}) {
         break;
       case 'titleText':
         UIItem = [
+          {
+            name: 'Save',
+            element: (children) =>
+              <ListMenu 
+                listOfValues = {[]} 
+                listOfLabels = {[]} 
+                setFunction={() => setTitleState((prevState) => {
+                  const newTitleState = [...prevState]
+                  const nodeIndex = newTitleState.findIndex((item) => item.id === titleItem.id)
+                  newTitleState[nodeIndex] = {  
+                    ...titleItem, 
+                    text: generateLineBreaks(titleItem.text)[0]
+                  }
+                  return newTitleState
+                })
+                } 
+                selected={null} 
+              >
+                {children}
+              </ListMenu>,
+          }
           {
             name: 'Font',
             element: (children) => 
